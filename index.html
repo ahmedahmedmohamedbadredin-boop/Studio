@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zeal Consulting | Enterprise AI Agent Implementation & Systems Integration</title>
+    <meta name="description" content="Zeal Consulting delivers end-to-end design, custom implementation, and orchestration of autonomous AI agents for small and medium-sized businesses worldwide.">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            400: '#38bdf8',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            700: '#075985',
+                            800: '#0c4a6e',
+                            900: '#082f49',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Google Fonts & Font Awesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        .card-glow {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-glow:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(2, 132, 199, 0.15), 0 8px 10px -6px rgba(2, 132, 199, 0.1);
+        }
+        .dark .card-glow:hover {
+            box-shadow: 0 20px 25px -5px rgba(56, 189, 248, 0.2), 0 8px 10px -6px rgba(56, 189, 248, 0.15);
+        }
+        .page-view {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.25s ease-in-out;
+        }
+        .page-view.active {
+            display: block;
+            opacity: 1;
+        }
+        .terminal-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .terminal-scroll::-webkit-scrollbar-thumb {
+            background-color: #334155;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-300">
+
+    <!-- Top Navigation Bar -->
+    <nav class="sticky top-0 z-40 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                
+                <!-- Logo -->
+                <div class="flex items-center gap-3 cursor-pointer" onclick="navigateTo('landing')">
+                    <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-brand-700 via-brand-600 to-sky-400 flex items-center justify-center text-white font-black text-2xl shadow-lg shadow-brand-500/25">
+                        Z
+                    </div>
+                    <div>
+                        <div class="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center gap-1.5">
+                            Zeal <span class="text-brand-600 dark:text-brand-400">Consulting</span>
+                        </div>
+                        <p class="text-[10px] font-medium tracking-wider text-slate-500 uppercase">AI Agents for SMBs</p>
+                    </div>
+                </div>
+
+                <!-- Desktop Nav Links -->
+                <div class="hidden md:flex items-center space-x-1 lg:space-x-2">
+                    <button onclick="navigateTo('landing')" data-nav="landing" class="nav-item px-3.5 py-2 rounded-lg text-sm font-semibold transition-colors text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-slate-900">Home</button>
+                    <button onclick="navigateTo('services')" data-nav="services" class="nav-item px-3.5 py-2 rounded-lg text-sm font-semibold transition-colors text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-400">Services</button>
+                    <button onclick="navigateTo('products')" data-nav="products" class="nav-item px-3.5 py-2 rounded-lg text-sm font-semibold transition-colors text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-400">Agent Suites</button>
+                    <button onclick="navigateTo('about')" data-nav="about" class="nav-item px-3.5 py-2 rounded-lg text-sm font-semibold transition-colors text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-400">About Us</button>
+                    <button onclick="navigateTo('contact')" data-nav="contact" class="nav-item px-3.5 py-2 rounded-lg text-sm font-semibold transition-colors text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-400">Contact</button>
+                </div>
+
+                <!-- Right Actions: Theme Toggle & CTA -->
+                <div class="flex items-center gap-3">
+                    <button id="themeToggle" aria-label="Toggle Theme" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors">
+                        <i id="themeIcon" class="fas fa-moon text-base"></i>
+                    </button>
+                    
+                    <button onclick="navigateTo('contact')" class="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-semibold text-sm shadow-md shadow-brand-600/20 transition-all hover:-translate-y-0.5">
+                        <span>Deploy AI Agent</span>
+                        <i class="fas fa-sparkles text-xs"></i>
+                    </button>
+
+                    <!-- Mobile Menu Hamburger -->
+                    <button id="mobileMenuBtn" aria-label="Open Mobile Menu" class="md:hidden p-2 rounded-lg text-slate-600 dark:text-slate-300">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Drawer -->
+        <div id="mobileMenu" class="hidden md:hidden px-4 pt-2 pb-4 space-y-1 bg-white dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800">
+            <button onclick="navigateTo('landing')" class="block w-full text-left px-4 py-2.5 text-sm font-medium rounded-lg text-slate-700 dark:text-slate-200 hover:bg-brand-50 dark:hover:bg-slate-900">Home</button>
+            <button onclick="navigateTo('services')" class="block w-full text-left px-4 py-2.5 text-sm font-medium rounded-lg text-slate-700 dark:text-slate-200 hover:bg-brand-50 dark:hover:bg-slate-900">Services</button>
+            <button onclick="navigateTo('products')" class="block w-full text-left px-4 py-2.5 text-sm font-medium rounded-lg text-slate-700 dark:text-slate-200 hover:bg-brand-50 dark:hover:bg-slate-900">Agent Suites</button>
+            <button onclick="navigateTo('about')" class="block w-full text-left px-4 py-2.5 text-sm font-medium rounded-lg text-slate-700 dark:text-slate-200 hover:bg-brand-50 dark:hover:bg-slate-900">About Us</button>
+            <button onclick="navigateTo('contact')" class="block w-full text-left px-4 py-2.5 text-sm font-medium rounded-lg text-slate-700 dark:text-slate-200 hover:bg-brand-50 dark:hover:bg-slate-900">Contact Us</button>
+        </div>
+    </nav>
+
+    <!-- MAIN DYNAMIC CONTENT CONTAINER -->
+    <div class="flex-grow">
+        
+        <!-- ============================================== -->
+        <!-- 1. LANDING PAGE VIEW                          -->
+        <!-- ============================================== -->
+        <div id="landingView" class="page-view active">
+            
+            <!-- Hero Section -->
+            <section class="relative overflow-hidden py-16 sm:py-24 border-b border-slate-200 dark:border-slate-900">
+                <div class="absolute inset-0 bg-[radial-gradient(#0284c7_1px,transparent_1px)] [background-size:24px_24px] opacity-15 dark:opacity-20"></div>
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+                    <div class="text-center max-w-4xl mx-auto">
+                        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-50 dark:bg-brand-950/70 border border-brand-200 dark:border-brand-800 text-brand-700 dark:text-brand-300 text-xs sm:text-sm font-semibold mb-6">
+                            <span class="flex h-2 w-2 rounded-full bg-brand-500 animate-pulse"></span>
+                            Production AI Agents for Small & Midsize Businesses
+                        </div>
+                        
+                        <h1 class="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.1]">
+                            Scale Your Business With <span class="bg-gradient-to-r from-brand-600 via-sky-500 to-indigo-500 bg-clip-text text-transparent">Autonomous AI Workforces</span>
+                        </h1>
+                        <p class="mt-6 text-lg sm:text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
+                            Zeal Consulting engineers, customizes, and integrates autonomous AI agents directly into your CRMs, ERPs, and internal workflows—saving hundreds of staff hours without enterprise overhead.
+                        </p>
+                        <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+                            <button onclick="navigateTo('contact')" class="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-semibold text-base shadow-lg shadow-brand-500/25 transition-all">
+                                Book Free Agentic Audit
+                            </button>
+                            <button onclick="navigateTo('products')" class="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-brand-500 text-slate-700 dark:text-slate-200 font-semibold text-base transition-all flex items-center justify-center gap-2">
+                                <i class="fas fa-play text-brand-500 text-xs"></i>
+                                <span>Try Interactive Sandbox</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Live Agent Interactive Sandbox -->
+                    <div class="mt-14 max-w-4xl mx-auto bg-slate-900 rounded-2xl p-6 border border-slate-800 shadow-2xl text-left font-mono">
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-4 mb-4">
+                            <div class="flex items-center gap-2">
+                                <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                                <span class="text-xs text-slate-400 ml-2 font-sans font-medium">Zeal Runtime | ReAct Multi-Agent Engine</span>
+                            </div>
+                            <span class="text-xs text-emerald-400 font-sans flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Online
+                            </span>
+                        </div>
+                        
+                        <div class="flex flex-col sm:flex-row gap-3 mb-4">
+                            <select id="heroAgentSelect" class="bg-slate-800 text-slate-200 text-xs rounded-lg px-3 py-2 border border-slate-700 font-sans focus:outline-none focus:border-brand-500">
+                                <option value="support">ZealSupport 360 (Customer Care & Refund Resolver)</option>
+                                <option value="revops">ZealRevOps (Lead Enrichment & Pipeline Qualifier)</option>
+                                <option value="operations">ZealFlow (ERP Stock Anomaly & PO Generator)</option>
+                            </select>
+                            <button onclick="triggerSandboxDemo()" class="px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white text-xs font-sans font-semibold rounded-lg transition-colors flex items-center justify-center gap-1.5">
+                                <i class="fas fa-bolt"></i> Run Agent Cycle
+                            </button>
+                        </div>
+
+                        <div id="terminalBody" class="h-48 overflow-y-auto terminal-scroll text-xs text-slate-300 space-y-2 p-2 bg-slate-950/70 rounded-lg">
+                            <p class="text-slate-500">// Ready. Select an AI Agent profile and trigger a multi-step execution cycle above.</p>
+                        </div>
+                    </div>
+
+                    <!-- Trust Stats -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16 text-center">
+                        <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                            <div class="text-3xl font-extrabold text-brand-600 dark:text-brand-400">65%</div>
+                            <div class="text-xs sm:text-sm font-medium text-slate-500 mt-1">Operational Cost Reduction</div>
+                        </div>
+                        <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                            <div class="text-3xl font-extrabold text-brand-600 dark:text-brand-400">14 Days</div>
+                            <div class="text-xs sm:text-sm font-medium text-slate-500 mt-1">Average Implementation Time</div>
+                        </div>
+                        <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                            <div class="text-3xl font-extrabold text-brand-600 dark:text-brand-400">99.8%</div>
+                            <div class="text-xs sm:text-sm font-medium text-slate-500 mt-1">Guardrail Accuracy Rate</div>
+                        </div>
+                        <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                            <div class="text-3xl font-extrabold text-brand-600 dark:text-brand-400">24/7/365</div>
+                            <div class="text-xs sm:text-sm font-medium text-slate-500 mt-1">Autonomous Execution</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Value Proposition for SMBs -->
+            <section class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-3xl mx-auto mb-14">
+                    <span class="text-brand-600 dark:text-brand-400 font-semibold text-xs uppercase tracking-widest">Why Small & Mid-Sized Businesses Choose Us</span>
+                    <h2 class="text-3xl font-bold text-slate-900 dark:text-white mt-2">Enterprise-Grade AI Scaled For SMB Budgets</h2>
+                    <p class="text-slate-600 dark:text-slate-400 mt-3 text-sm sm:text-base">We don't sell generic chat boxes. We design deterministic, goal-oriented agent systems that act inside your company's software.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="p-8 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                        <div class="w-12 h-12 rounded-xl bg-brand-100 dark:bg-brand-950 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xl mb-5">
+                            <i class="fas fa-network-wired"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Native Tool & API Calling</h3>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                            Our agents seamlessly query databases, create Zendesk tickets, send Slack alerts, update HubSpot records, and issue invoices in QuickBooks.
+                        </p>
+                    </div>
+
+                    <div class="p-8 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                        <div class="w-12 h-12 rounded-xl bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xl mb-5">
+                            <i class="fas fa-shield-halved"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Zero-Hallucination Guardrails</h3>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                            Hard deterministic safety policies, NeMo guardrails, and role-based privilege access prevent unauthorized data exposure and hallucinations.
+                        </p>
+                    </div>
+
+                    <div class="p-8 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                        <div class="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xl mb-5">
+                            <i class="fas fa-user-check"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Human-in-the-Loop Routing</h3>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                            High-risk decisions or sensitive edge cases are automatically routed to human staff with full contextual summaries before execution.
+                        </p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- 2. SERVICES PAGE VIEW                         -->
+        <!-- ============================================== -->
+        <div id="servicesView" class="page-view">
+            <header class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-6">
+                <div class="text-center max-w-3xl mx-auto">
+                    <span class="text-brand-600 dark:text-brand-400 font-semibold text-xs tracking-wider uppercase bg-brand-50 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800 px-4 py-1.5 rounded-full inline-block mb-4">
+                        What We Deliver
+                    </span>
+                    <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+                        Specialized AI Agent Services for Growing Businesses
+                    </h1>
+                    <p class="mt-4 text-base sm:text-lg text-slate-600 dark:text-slate-400">
+                        Full-lifecycle consulting: from initial feasibility audits and custom prompt architecture to LangGraph/CrewAI deployment, CRM wiring, and continuous monitoring.
+                    </p>
+                </div>
+            </header>
+
+            <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    
+                    <!-- Service 1 -->
+                    <article class="card-glow bg-white dark:bg-slate-900 rounded-2xl p-8 border border-slate-200 dark:border-slate-800 flex flex-col justify-between">
+                        <div>
+                            <div class="w-14 h-14 rounded-xl bg-sky-100 dark:bg-sky-950/80 text-sky-600 dark:text-sky-400 flex items-center justify-center text-2xl mb-6">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-3">Custom AI Agent Design & Architecture</h2>
+                            <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-6">
+                                Tailored cognitive architectures utilizing ReAct, Plan-and-Solve, and reflective reasoning patterns mapped specifically to your business rules.
+                            </p>
+                        </div>
+                        <button onclick="openModal(1)" class="w-full inline-flex items-center justify-between px-5 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-brand-600 hover:text-white dark:hover:bg-brand-600 text-slate-700 dark:text-slate-200 font-semibold text-sm transition-all">
+                            <span>Inspect Specifications</span>
+                            <i class="fas fa-arrow-right text-xs"></i>
+                        </button>
+                    </article>
+
+                    <!-- Service 2 -->
+                    <article class="card-glow bg-white dark:bg-slate-900 rounded-2xl p-8 border border-slate-200 dark:border-slate-800 flex flex-col justify-between">
+                        <div>
+                            <div class="w-14 h-14 rounded-xl bg-indigo-100 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-2xl mb-6">
+                                <i class="fas fa-diagram-project"></i>
+                            </div>
+                            <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-3">Multi-Agent Workflow Orchestration</h2>
+                            <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-6">
+                                Implementing collaborative agent swarms (orchestrator-worker models) built on LangGraph, Autogen, and CrewAI for complex end-to-end task flows.
+                            </p>
+                        </div>
+                        <button onclick="openModal(2)" class="w-full inline-flex items-center justify-between px-5 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-brand-600 hover:text-white dark:hover:bg-brand-600 text-slate-700 dark:text-slate-200 font-semibold text-sm transition-all">
+                            <span>Inspect Specifications</span>
+                            <i class="fas fa-arrow-right text-xs"></i>
+                        </button>
+                    </article>
+
+                    <!-- Service 3 -->
+                    <article class="card-glow bg-white dark:bg-slate-900 rounded-2xl p-8 border border-slate-200 dark:border-slate-800 flex flex-col justify-between">
+                        <div>
+                            <div class="w-14 h-14 rounded-xl bg-emerald-100 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-2xl mb-6">
+                                <i class="fas fa-plug-circle-bolt"></i>
+                            </div>
+                            <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-3">ERP, CRM & Legacy Tool Integration</h2>
+                            <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-6">
+                                We connect your agents to HubSpot, Salesforce, NetSuite, SAP, Slack, Shopify, and proprietary SQL systems via secure function calling.
+                            </p>
+                        </div>
+                        <button onclick="openModal(3)" class="w-full inline-flex items-center justify-between px-5 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-brand-600 hover:text-white dark:hover:bg-brand-600 text-slate-700 dark:text-slate-200 font-semibold text-sm transition-all">
+                            <span>Inspect Specifications</span>
+                            <i class="fas fa-arrow-right text-xs"></i>
+                        </button>
+                    </article>
+
+                    <!-- Service 4 -->
+                    <article class="card-glow bg-white dark:bg-slate-900 rounded-2xl p-8 border border-slate-200 dark:border-slate-800 flex flex-col justify-between">
+                        <div>
+                            <div class="w-14 h-14 rounded-xl bg-amber-100 dark:bg-amber-950/80 text-amber-600 dark:text-amber-400 flex items-center justify-center text-2xl mb-6">
+                                <i class="fas fa-layer-group"></i>
+                            </div>
+                            <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-3">Domain-Specific RAG Knowledge Bases</h2>
+                            <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-6">
+                                Hybrid vector-and-graph search (Milvus, Pinecone, Qdrant) over internal documentation, policies, and contracts with strict ACL permissions.
+                            </p>
+                        </div>
+                        <button onclick="openModal(4)" class="w-full inline-flex items-center justify-between px-5 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-brand-600 hover:text-white dark:hover:bg-brand-600 text-slate-700 dark:text-slate-200 font-semibold text-sm transition-all">
+                            <span>Inspect Specifications</span>
+                            <i class="fas fa-arrow-right text-xs"></i>
+                        </button>
+                    </article>
+
+                    <!-- Service 5 -->
+                    <article class="card-glow bg-white dark:bg-slate-900 rounded-2xl p-8 border border-slate-200 dark:border-slate-800 flex flex-col justify-between">
+                        <div>
+                            <div class="w-14 h-14 rounded-xl bg-rose-100 dark:bg-rose-950/80 text-rose-600 dark:text-rose-400 flex items-center justify-center text-2xl mb-6">
+                                <i class="fas fa-shield-virus"></i>
+                            </div>
+                            <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-3">AI Safety, Guardrails & Governance</h2>
+                            <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-6">
+                                Preventing prompt injection, data leaks, and compliance violations with SOC2, GDPR, and HIPAA-compliant validation pipelines.
+                            </p>
+                        </div>
+                        <button onclick="openModal(5)" class="w-full inline-flex items-center justify-between px-5 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-brand-600 hover:text-white dark:hover:bg-brand-600 text-slate-700 dark:text-slate-200 font-semibold text-sm transition-all">
+                            <span>Inspect Specifications</span>
+                            <i class="fas fa-arrow-right text-xs"></i>
+                        </button>
+                    </article>
+
+                    <!-- Service 6 -->
+                    <article class="card-glow bg-white dark:bg-slate-900 rounded-2xl p-8 border border-slate-200 dark:border-slate-800 flex flex-col justify-between">
+                        <div>
+                            <div class="w-14 h-14 rounded-xl bg-teal-100 dark:bg-teal-950/80 text-teal-600 dark:text-teal-400 flex items-center justify-center text-2xl mb-6">
+                                <i class="fas fa-users-gear"></i>
+                            </div>
+                            <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-3">Team Upskilling & Operational Handoff</h2>
+                            <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-6">
+                                We train your existing staff to manage, audit, and prompt-tune your deployed agents, ensuring zero ongoing dependency on external agencies.
+                            </p>
+                        </div>
+                        <button onclick="openModal(6)" class="w-full inline-flex items-center justify-between px-5 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-brand-600 hover:text-white dark:hover:bg-brand-600 text-slate-700 dark:text-slate-200 font-semibold text-sm transition-all">
+                            <span>Inspect Specifications</span>
+                            <i class="fas fa-arrow-right text-xs"></i>
+                        </button>
+                    </article>
+
+                </div>
+            </main>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- 3. PRODUCTS PAGE VIEW                         -->
+        <!-- ============================================== -->
+        <div id="productsView" class="page-view">
+            <header class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-6">
+                <div class="text-center max-w-3xl mx-auto">
+                    <span class="text-brand-600 dark:text-brand-400 font-semibold text-xs tracking-wider uppercase bg-brand-50 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800 px-4 py-1.5 rounded-full inline-block mb-4">
+                        Turnkey Agent Suites
+                    </span>
+                    <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+                        Pre-Engineered Agent Systems Ready for Integration
+                    </h1>
+                    <p class="mt-4 text-base sm:text-lg text-slate-600 dark:text-slate-400">
+                        Avoid building from scratch. We deploy pre-tested, battle-proven agent architectures customized to your schema in as little as 10 business days.
+                    </p>
+                </div>
+            </header>
+
+            <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    
+                    <!-- Product 1 -->
+                    <div class="bg-white dark:bg-slate-900 rounded-3xl p-8 border-2 border-brand-500/30 dark:border-brand-500/30 flex flex-col justify-between shadow-xl relative">
+                        <span class="absolute -top-3.5 right-6 px-3 py-1 bg-brand-600 text-white text-[11px] font-bold rounded-full uppercase tracking-wider">Most Popular</span>
+                        <div>
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-12 h-12 rounded-xl bg-brand-50 dark:bg-slate-800 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xl">
+                                    <i class="fas fa-headset"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-slate-900 dark:text-white">ZealSupport 360</h3>
+                                    <p class="text-xs text-brand-600 dark:text-brand-400 font-medium">Autonomous Customer Success</p>
+                                </div>
+                            </div>
+                            <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-6">
+                                Resolves Tier 1 & 2 tickets end-to-end, issues refund vouchers within designated limits, verifies shipping tracking numbers, and modifies customer accounts.
+                            </p>
+                            <div class="space-y-2.5 text-xs text-slate-600 dark:text-slate-300 mb-8">
+                                <div class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> Zendesk, Intercom, Freshdesk Sync</div>
+                                <div class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> Stripe & Shopify Automated Tool Calls</div>
+                                <div class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> Multilingual Inbound (50+ Languages)</div>
+                            </div>
+                        </div>
+                        <button onclick="navigateTo('contact')" class="w-full py-3 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-semibold text-sm transition-all text-center">
+                            Request Suite Demo
+                        </button>
+                    </div>
+
+                    <!-- Product 2 -->
+                    <div class="bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-200 dark:border-slate-800 flex flex-col justify-between shadow-sm">
+                        <div>
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-12 h-12 rounded-xl bg-indigo-50 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xl">
+                                    <i class="fas fa-funnel-dollar"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-slate-900 dark:text-white">ZealRevOps Agent</h3>
+                                    <p class="text-xs text-indigo-600 dark:text-indigo-400 font-medium">Pipeline & Inbound Qualification</p>
+                                </div>
+                            </div>
+                            <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-6">
+                                Researches inbound leads in 60 seconds, scores criteria against your ICP, custom-drafts executive outreach, and coordinates discovery calls.
+                            </p>
+                            <div class="space-y-2.5 text-xs text-slate-600 dark:text-slate-300 mb-8">
+                                <div class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> Salesforce & HubSpot Native Updates</div>
+                                <div class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> Apollo & LinkedIn Profile Enrichment</div>
+                                <div class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> Auto-Calendar Sync & Anti-Collision</div>
+                            </div>
+                        </div>
+                        <button onclick="navigateTo('contact')" class="w-full py-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-brand-600 hover:text-white text-slate-700 dark:text-slate-200 font-semibold text-sm transition-all text-center">
+                            Request Suite Demo
+                        </button>
+                    </div>
+
+                    <!-- Product 3 -->
+                    <div class="bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-200 dark:border-slate-800 flex flex-col justify-between shadow-sm">
+                        <div>
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-slate-800 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xl">
+                                    <i class="fas fa-boxes-packing"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-slate-900 dark:text-white">ZealFlow ERP</h3>
+                                    <p class="text-xs text-emerald-600 dark:text-emerald-400 font-medium">Supply Chain & PO Reconciler</p>
+                                </div>
+                            </div>
+                            <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-6">
+                                Scans invoices, detects freight delivery variances, automates 3-way matching between POs, bills of lading, and contracts, alerting when margin erosion is detected.
+                            </p>
+                            <div class="space-y-2.5 text-xs text-slate-600 dark:text-slate-300 mb-8">
+                                <div class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> NetSuite, QuickBooks & Xero Sync</div>
+                                <div class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> OCR Multimodal Invoice Parsing</div>
+                                <div class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> Human Sign-off Threshold Enforcers</div>
+                            </div>
+                        </div>
+                        <button onclick="navigateTo('contact')" class="w-full py-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-brand-600 hover:text-white text-slate-700 dark:text-slate-200 font-semibold text-sm transition-all text-center">
+                            Request Suite Demo
+                        </button>
+                    </div>
+
+                </div>
+            </main>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- 4. ABOUT PAGE VIEW                            -->
+        <!-- ============================================== -->
+        <div id="aboutView" class="page-view">
+            <header class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-6">
+                <div class="text-center max-w-3xl mx-auto">
+                    <span class="text-brand-600 dark:text-brand-400 font-semibold text-xs tracking-wider uppercase bg-brand-50 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800 px-4 py-1.5 rounded-full inline-block mb-4">
+                        Our Mission & Standard
+                    </span>
+                    <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+                        Democratizing Autonomous AI for the Real Economy
+                    </h1>
+                    <p class="mt-4 text-base sm:text-lg text-slate-600 dark:text-slate-400">
+                        Zeal Consulting was founded to bridge the gap between bleeding-edge AI research labs and the operational reality of midmarket businesses.
+                    </p>
+                </div>
+            </header>
+
+            <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center mb-16">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-4">Why We Started Zeal Consulting</h2>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-4">
+                            Most AI consulting firms focus exclusively on Fortune 500 corporations with multimillion-dollar discovery budgets, delivering slides rather than functional code. Meanwhile, small and medium enterprises are left trying to glue together brittle chat widgets.
+                        </p>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-4">
+                            We take an engineering-first stance. We build operational AI agents that act as reliable, tireless digital employees: executing actions, querying live enterprise databases, validating outputs through strict deterministic guardrails, and logging all steps transparently.
+                        </p>
+                        <div class="grid grid-cols-2 gap-4 mt-6">
+                            <div class="border-l-2 border-brand-500 pl-4">
+                                <div class="text-xl font-bold text-slate-900 dark:text-white">Global Reach</div>
+                                <div class="text-xs text-slate-500">Deployments across USA, UK, EMEA & APAC</div>
+                            </div>
+                            <div class="border-l-2 border-brand-500 pl-4">
+                                <div class="text-xl font-bold text-slate-900 dark:text-white">Zero Vendor Lock</div>
+                                <div class="text-xs text-slate-500">Full client IP ownership of workflows</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-tr from-brand-900 to-slate-900 p-8 rounded-3xl text-white shadow-xl relative border border-slate-800">
+                        <div class="text-brand-400 text-xs font-mono uppercase mb-2">// The Zeal 4-D Delivery Framework</div>
+                        <h3 class="text-xl font-bold mb-6">How We Build High-Trust AI Agents</h3>
+                        
+                        <div class="space-y-4 text-sm">
+                            <div class="flex items-start gap-3">
+                                <span class="w-6 h-6 rounded-full bg-brand-500/30 text-brand-300 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">1</span>
+                                <div><strong class="text-white block">Discover & Map:</strong> We audit internal processes, API readiness, and select only highest-ROI bottlenecks.</div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="w-6 h-6 rounded-full bg-brand-500/30 text-brand-300 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</span>
+                                <div><strong class="text-white block">Design Cognitive Flow:</strong> Construct deterministic graph flows (LangGraph), memory management, and prompt chains.</div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="w-6 h-6 rounded-full bg-brand-500/30 text-brand-300 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">3</span>
+                                <div><strong class="text-white block">Deploy with Guardrails:</strong> Implement sandboxed validation, API auth limits, and human-in-the-loop triggers.</div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="w-6 h-6 rounded-full bg-brand-500/30 text-brand-300 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">4</span>
+                                <div><strong class="text-white block">Defend & Optimize:</strong> Monitor telemetry (LangSmith/Phoenix) for latency, token efficiency, and drift.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- 5. CONTACT US PAGE VIEW                       -->
+        <!-- ============================================== -->
+        <div id="contactView" class="page-view">
+            <header class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-6">
+                <div class="text-center max-w-3xl mx-auto">
+                    <span class="text-brand-600 dark:text-brand-400 font-semibold text-xs tracking-wider uppercase bg-brand-50 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800 px-4 py-1.5 rounded-full inline-block mb-4">
+                        Direct Advisory
+                    </span>
+                    <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+                        Deploy Your AI Agent Workforce
+                    </h1>
+                    <p class="mt-4 text-base sm:text-lg text-slate-600 dark:text-slate-400">
+                        Speak directly with a Senior AI Systems Architect. We evaluate your stack, estimate automation savings, and deliver an implementation roadmap.
+                    </p>
+                </div>
+            </header>
+
+            <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 mb-16">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    
+                    <!-- Left: Contact Details & Guarantee -->
+                    <div class="lg:col-span-1 space-y-6">
+                        <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                            <h3 class="text-base font-bold text-slate-900 dark:text-white mb-4">Global Headquarters</h3>
+                            <div class="space-y-3 text-xs text-slate-600 dark:text-slate-400">
+                                <div class="flex items-center gap-3">
+                                    <i class="fas fa-location-dot text-brand-500 text-sm"></i>
+                                    <span>San Francisco, CA & London, UK</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <i class="fas fa-envelope text-brand-500 text-sm"></i>
+                                    <a href="mailto:joggymann@hotmail.com" class="hover:text-brand-500">joggymann@hotmail.com</a>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <i class="fas fa-phone text-brand-500 text-sm"></i>
+                                    <a href="tel:+201060584968" class="hover:text-brand-500">+201060584968</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-6 rounded-2xl bg-brand-50 dark:bg-brand-950/40 border border-brand-200 dark:border-brand-800">
+                            <div class="flex items-center gap-2 text-brand-600 dark:text-brand-400 font-bold text-sm mb-2">
+                                <i class="fas fa-award"></i> The Zeal 100% SLA Guarantee
+                            </div>
+                            <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                                All our SMB agent implementations include our 60-day stabilization warranty, including real-time error auditing and prompt refinement.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Right: Contact Form -->
+                    <div class="lg:col-span-2">
+                        <form id="contactForm" onsubmit="submitContactForm(event)" class="bg-white dark:bg-slate-900 p-8 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xl space-y-5">
+                            
+                            <!-- Hidden FormSubmit helper inputs -->
+                            <input type="hidden" name="_captcha" value="false">
+                            <input type="hidden" name="_template" value="table">
+                            <input type="hidden" name="_subject" value="New AI Consultation Lead - Zeal Consulting">
+
+                            <div id="formAlert" class="hidden p-4 rounded-xl text-xs font-semibold"></div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase mb-1.5">Full Name *</label>
+                                    <input type="text" name="fullName" required placeholder="Alex Mercer" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:outline-none focus:border-brand-500 dark:text-white">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase mb-1.5">Corporate Email *</label>
+                                    <input type="email" name="email" required placeholder="client@company.com" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:outline-none focus:border-brand-500 dark:text-white">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase mb-1.5">Company Name *</label>
+                                    <input type="text" name="company" required placeholder="Acme Logistics Inc" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:outline-none focus:border-brand-500 dark:text-white">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase mb-1.5">Team Size</label>
+                                    <select name="teamSize" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:outline-none focus:border-brand-500 dark:text-white">
+                                        <option value="1-20">1 - 20 employees</option>
+                                        <option value="20-100" selected>20 - 100 employees</option>
+                                        <option value="100-500">100 - 500 employees</option>
+                                        <option value="500+">500+ employees</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase mb-1.5">Target Service / Suite</label>
+                                    <select name="serviceType" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:outline-none focus:border-brand-500 dark:text-white">
+                                        <option value="ZealSupport 360">ZealSupport 360 (Customer Care)</option>
+                                        <option value="ZealRevOps">ZealRevOps (Lead Qualification)</option>
+                                        <option value="ZealFlow ERP">ZealFlow (Invoice & ERP Automation)</option>
+                                        <option value="Custom Agent Architecture">Custom Architecture / LangGraph Swarm</option>
+                                        <option value="RAG Knowledge Base">Enterprise RAG Knowledge Base</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase mb-1.5">Implementation Budget</label>
+                                    <select name="budget" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:outline-none focus:border-brand-500 dark:text-white">
+                                        <option value="$10k - $25k">$10k - $25k</option>
+                                        <option value="$25k - $50k" selected>$25k - $50k</option>
+                                        <option value="$50k - $100k+">$50k - $100k+</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase mb-1.5">Project Scope & Existing Tools (APIs, CRM, ERP) *</label>
+                                <textarea name="message" required rows="4" placeholder="Describe the manual bottleneck you'd like your AI agent to solve..." class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:outline-none focus:border-brand-500 dark:text-white"></textarea>
+                            </div>
+
+                            <button id="submitBtn" type="submit" class="w-full py-3.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2">
+                                <span>Schedule Systems Architecture Call</span>
+                                <i class="fas fa-paper-plane text-xs"></i>
+                            </button>
+                        </form>
+                    </div>
+
+                </div>
+            </main>
+        </div>
+
+    </div>
+
+    <!-- Details Modal (For Services & System Specs) -->
+    <div id="detailsModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl max-w-2xl w-full border border-slate-200 dark:border-slate-800 shadow-2xl p-6 sm:p-8 relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closeModal()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xl p-2 rounded-lg">
+                <i class="fas fa-xmark"></i>
+            </button>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <!-- Global Footer -->
+    <footer class="bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-brand-600 flex items-center justify-center text-white font-bold text-lg">
+                        Z
+                    </div>
+                    <span class="text-lg font-bold text-slate-900 dark:text-white">Zeal Consulting</span>
+                </div>
+                <div class="flex flex-wrap justify-center gap-6 text-xs text-slate-500 dark:text-slate-400">
+                    <button onclick="navigateTo('landing')" class="hover:text-brand-500">Home</button>
+                    <button onclick="navigateTo('services')" class="hover:text-brand-500">Services</button>
+                    <button onclick="navigateTo('products')" class="hover:text-brand-500">Agent Suites</button>
+                    <button onclick="navigateTo('about')" class="hover:text-brand-500">About</button>
+                    <button onclick="navigateTo('contact')" class="hover:text-brand-500">Contact</button>
+                </div>
+                <p class="text-xs text-slate-400 dark:text-slate-600">
+                    &copy; <span id="currentYear"></span> Zeal Consulting Group. All rights reserved.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        // 1. Navigation / Router Controller
+        function navigateTo(pageId) {
+            document.querySelectorAll('.page-view').forEach(view => {
+                view.classList.remove('active');
+            });
+
+            const target = document.getElementById(pageId + 'View');
+            if (target) {
+                target.classList.add('active');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            document.querySelectorAll('.nav-item').forEach(btn => {
+                if (btn.getAttribute('data-nav') === pageId) {
+                    btn.classList.add('text-brand-600', 'dark:text-brand-400', 'bg-brand-50', 'dark:bg-slate-900');
+                    btn.classList.remove('text-slate-600', 'dark:text-slate-300');
+                } else {
+                    btn.classList.remove('text-brand-600', 'dark:text-brand-400', 'bg-brand-50', 'dark:bg-slate-900');
+                    btn.classList.add('text-slate-600', 'dark:text-slate-300');
+                }
+            });
+
+            document.getElementById('mobileMenu').classList.add('hidden');
+        }
+
+        // Mobile Menu toggle
+        document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+            document.getElementById('mobileMenu').classList.toggle('hidden');
+        });
+
+        // 2. Services Data Store & Modal Preview
+        const servicesData = {
+            1: {
+                title: "Custom AI Agent Design & Architecture",
+                headline: "Goal-Oriented Cognitive Systems Built for Real-World Tasks",
+                overview: "We architect multi-tiered agent systems combining state-machine reliability with Large Language Model agility. Our agents utilize dynamic planning, memory retention, and tool orchestration to complete complex, non-linear business operations autonomously.",
+                offerings: [
+                    "ReAct, Reflection, and Tree-of-Thought reasoning implementations",
+                    "Session memory & long-term episodic vector storage design",
+                    "Deterministic fallback and graceful degradation rules",
+                    "Complete source-code and prompt ownership transfer"
+                ],
+                value: "Replace fragmented automation scripts with intelligent systems capable of managing context shifts and edge cases."
+            },
+            2: {
+                title: "Multi-Agent Workflow Orchestration",
+                headline: "Collaborative Swarms of Specialized Digital Agents",
+                overview: "Complex enterprise tasks are rarely solved by a single prompt. We build hierarchical agent teams using LangGraph and CrewAI, where specialist agents (researchers, checkers, database queries, and executive summarizers) work synchronously to finish jobs.",
+                offerings: [
+                    "LangGraph stateful cyclical graph workflow programming",
+                    "Supervisor-Worker and peer-to-peer agent consensus protocols",
+                    "Sub-task isolation to minimize token costs and eliminate hallucinations",
+                    "Real-time LangSmith telemetry and tracing integration"
+                ],
+                value: "Eliminates multi-department communication lag by executing cross-functional handoffs in milliseconds."
+            },
+            3: {
+                title: "ERP, CRM & Legacy Tool Integration",
+                headline: "Connecting AI Agents to Your Existing Enterprise Software",
+                overview: "An AI agent is only as capable as the systems it can interact with. We engineer secure API bridges, OAuth connectors, and database read/write permissions directly into your company's CRM, ERP, and operational toolsets.",
+                offerings: [
+                    "Two-way sync with Salesforce, HubSpot, Zendesk, and ServiceNow",
+                    "Accounting tool access: QuickBooks, Xero, Stripe billing, and SAP",
+                    "Strict role-based action permissioning (RBAC) and write-safety caps",
+                    "Secure reverse-proxy architecture for on-premises legacy SQL systems"
+                ],
+                value: "Turn passive documentation into active operations without abandoning your current software licenses."
+            },
+            4: {
+                title: "Domain-Specific RAG Knowledge Bases",
+                headline: "Vector & Graph Retrieval Grounded in Your Private IP",
+                overview: "We engineer enterprise-scale Retrieval-Augmented Generation (RAG) pipelines that ingest internal SOPs, contracts, PDFs, and relational tables, ensuring agents always cite authorized operational facts.",
+                offerings: [
+                    "Hybrid BM25 keyword + dense vector semantic retrieval",
+                    "Document chunking, table parsing, and metadata filtering",
+                    "Integration with Pinecone, Qdrant, Milvus, and pgvector",
+                    "Automatic continuous sync with Google Drive, Notion, and Confluence"
+                ],
+                value: "Empower AI agents with accurate corporate memory while keeping confidential trade secrets strictly internal."
+            },
+            5: {
+                title: "AI Safety, Guardrails & Governance",
+                headline: "Bank-Grade Hallucination Defenses & Compliance Auditing",
+                overview: "We construct rigorous guardrail firewalls around all inputs and outputs. Every agent decision is evaluated for toxic language, prompt injection attacks, compliance breaches (SOC2, GDPR, HIPAA), and semantic drift.",
+                offerings: [
+                    "NVIDIA NeMo Guardrails and custom regex filter layer design",
+                    "Prompt-injection and adversarial jailbreak penetration testing",
+                    "PII masking, redaction, and deterministic response whitelisting",
+                    "Complete audit-trail logging for automated regulatory review"
+                ],
+                value: "Deploy production autonomous systems with complete risk mitigation and executive confidence."
+            },
+            6: {
+                title: "Team Upskilling & Operational Handoff",
+                headline: "Empowering Your In-House Staff to Lead AI Operations",
+                overview: "We believe client self-reliance is the mark of authentic consulting. We lead structured training workshops for your engineering, product, and operations teams to monitor, debug, and expand your agent architecture.",
+                offerings: [
+                    "Executive & operational playbooks on agentic process management",
+                    "Prompt-engineering and prompt-regression testing seminars",
+                    "Step-by-step documentation for adding new tools and APIs",
+                    "Dedicated SLA support and architectural advisory office hours"
+                ],
+                value: "Gain lasting competitive advantage and AI maturity without continuous reliance on external agencies."
+            }
+        };
+
+        function openModal(id) {
+            const service = servicesData[id];
+            const modalContent = document.getElementById('modalContent');
+            
+            modalContent.innerHTML = `
+                <span class="text-xs font-semibold text-brand-600 dark:text-brand-400 uppercase tracking-wider">Service Architecture</span>
+                <h3 class="text-2xl font-bold text-slate-900 dark:text-white mt-1 mb-2">${service.title}</h3>
+                <h4 class="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-4">${service.headline}</h4>
+                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-6">${service.overview}</p>
+                
+                <h5 class="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-3">Core Deliverables:</h5>
+                <ul class="space-y-2 mb-6">
+                    ${service.offerings.map(item => `
+                        <li class="flex items-start gap-2.5 text-sm text-slate-600 dark:text-slate-300">
+                            <i class="fas fa-circle-check text-brand-500 mt-0.5"></i>
+                            <span>${item}</span>
+                        </li>
+                    `).join('')}
+                </ul>
+
+                <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 mb-6">
+                    <span class="text-xs font-bold text-slate-900 dark:text-white block mb-1">Measurable Business Impact:</span>
+                    <p class="text-xs text-slate-600 dark:text-slate-400">${service.value}</p>
+                </div>
+
+                <div class="flex justify-end gap-3">
+                    <button onclick="closeModal()" class="px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-semibold text-sm hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                        Close
+                    </button>
+                    <button onclick="closeModal(); navigateTo('contact');" class="px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-semibold text-sm transition-colors inline-flex items-center gap-2">
+                        <span>Deploy This Service</span>
+                        <i class="fas fa-arrow-right text-xs"></i>
+                    </button>
+                </div>
+            `;
+
+            document.getElementById('detailsModal').classList.remove('hidden');
+            document.getElementById('detailsModal').classList.add('flex');
+        }
+
+        function closeModal() {
+            document.getElementById('detailsModal').classList.add('hidden');
+            document.getElementById('detailsModal').classList.remove('flex');
+        }
+
+        document.getElementById('detailsModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('detailsModal')) closeModal();
+        });
+
+        // 3. Theme Toggle Controller
+        const themeToggleBtn = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+            themeIcon.classList.replace('fa-moon', 'fa-sun');
+        }
+
+        themeToggleBtn.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            if (document.documentElement.classList.contains('dark')) {
+                themeIcon.classList.replace('fa-moon', 'fa-sun');
+            } else {
+                themeIcon.classList.replace('fa-sun', 'fa-moon');
+            }
+        });
+
+        // 4. Interactive Live Agent Sandbox Simulator (Client-side with simulated tool calls)
+        async function triggerSandboxDemo() {
+            const agentType = document.getElementById('heroAgentSelect').value;
+            const terminal = document.getElementById('terminalBody');
+            
+            terminal.innerHTML = `<p class="text-brand-400 animate-pulse">// Dispatching prompt to agent engine... Initializing graph execution...</p>`;
+
+            const simulatedTraces = {
+                support: [
+                    { type: 'thought', text: "Analyzing customer return inquiry and cross-referencing order status." },
+                    { type: 'action', text: "Invoking Tool: [Zendesk_API.fetch_unresolved_tickets] with filter: {priority: 'high'}." },
+                    { type: 'observation', text: "Retrieved customer order #89211 from Shopify DB. Item eligible for return." },
+                    { type: 'action', text: "Executing Tool: [Internal_RAG.generate_prepaid_label] via DHL Express API." },
+                    { type: 'final', text: "Return authorization processed, shipping label emailed to customer, and CRM record updated." }
+                ],
+                revops: [
+                    { type: 'thought', text: "Evaluating inbound enterprise lead domain and employee scale." },
+                    { type: 'action', text: "Executing Tool: [Apollo_Enrichment.scan_domain] for tech stack and ARR profile." },
+                    { type: 'observation', text: "Target company fits ideal ICP criteria ($12M ARR, 65 employees, uses HubSpot)." },
+                    { type: 'action', text: "Triggering Tool: [GoogleCalendar.find_mutual_availability]." },
+                    { type: 'final', text: "Lead qualified (Score: 96/100). Customized executive pitch drafted and meeting slot reserved." }
+                ],
+                operations: [
+                    { type: 'thought', text: "Evaluating inventory safety stock against weekly fulfillment targets." },
+                    { type: 'action', text: "Querying Tool: [NetSuite_ERP.get_stock_levels] on component SKU-7892." },
+                    { type: 'observation', text: "SKU-7892 below safety threshold. Projected stockout in 72 hours." },
+                    { type: 'action', text: "Invoking Tool: [Procurement.generate_po_and_request_quote] to approved vendors." },
+                    { type: 'final', text: "PO #4412 issued automatically under pre-approved spend limit of $15,000." }
+                ]
+            };
+
+            const steps = simulatedTraces[agentType] || simulatedTraces.support;
+            terminal.innerHTML = '';
+
+            steps.forEach((step, idx) => {
+                setTimeout(() => {
+                    let colorClass = 'text-slate-300';
+                    let prefix = '[LOG]';
+                    
+                    if (step.type === 'thought') {
+                        colorClass = 'text-sky-400';
+                        prefix = '[THOUGHT]';
+                    } else if (step.type === 'action') {
+                        colorClass = 'text-amber-400 font-semibold';
+                        prefix = '[ACTION]';
+                    } else if (step.type === 'observation') {
+                        colorClass = 'text-purple-400';
+                        prefix = '[OBSERVE]';
+                    } else if (step.type === 'final') {
+                        colorClass = 'text-emerald-400 font-bold';
+                        prefix = '[OUTCOME]';
+                    }
+
+                    const p = document.createElement('p');
+                    p.className = colorClass;
+                    p.innerHTML = `<span class="opacity-60 text-[10px] mr-1.5">${prefix}</span> ${step.text}`;
+                    terminal.appendChild(p);
+                    terminal.scrollTop = terminal.scrollHeight;
+                }, idx * 450);
+            });
+        }
+
+        // 5. Contact Form Handler (Targeted to joggymann@hotmail.com via FormSubmit AJAX)
+        async function submitContactForm(event) {
+            event.preventDefault();
+            const form = event.target;
+            const alertBox = document.getElementById('formAlert');
+            const submitBtn = document.getElementById('submitBtn');
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Dispatching Inquiry...`;
+
+            // Prepare Clean JSON payload
+            const payload = {
+                fullName: form.fullName.value,
+                email: form.email.value,
+                company: form.company.value,
+                teamSize: form.teamSize.value,
+                serviceType: form.serviceType.value,
+                budget: form.budget.value,
+                message: form.message.value,
+                _subject: `New AI Consultation Lead from ${form.company.value}`,
+                _captcha: "false",
+                _template: "table"
+            };
+
+            try {
+                const response = await fetch("https://formsubmit.co/ajax/joggymann@hotmail.com", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+                console.log("FormSubmit API Response:", data);
+
+                // Check boolean (true) or string ("true")
+                if (response.ok && (data.success === true || data.success === "true")) {
+                    alertBox.className = "p-4 rounded-xl text-xs font-semibold bg-emerald-50 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 block";
+                    alertBox.textContent = "Thank you! Your inquiry was successfully dispatched to our senior AI team. We will contact you shortly.";
+                    form.reset();
+                } else {
+                    alertBox.className = "p-4 rounded-xl text-xs font-semibold bg-amber-50 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-300 dark:border-amber-800 block";
+                    alertBox.textContent = data.message || "Please check your Hotmail inbox/junk folder to activate FormSubmit for the first time.";
+                }
+            } catch (error) {
+                console.error("Submission Error:", error);
+                alertBox.className = "p-4 rounded-xl text-xs font-semibold bg-rose-50 text-rose-800 dark:bg-rose-950/60 dark:text-rose-300 border border-rose-300 dark:border-rose-800 block";
+                alertBox.textContent = "Network error. Please try again or email us directly at joggymann@hotmail.com.";
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = `<span>Schedule Systems Architecture Call</span> <i class="fas fa-paper-plane text-xs"></i>`;
+            }
+        }
+    </script>
+</body>
+</html>
