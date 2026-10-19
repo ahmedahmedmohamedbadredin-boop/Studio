@@ -1,6 +1,6 @@
 # Zeal Consulting | Autonomous AI Agents for SMBs
 
-[![Live Demo](https://img.shields.io/badge/Live-Website-0284c7?style=for-the-badge&logo=github)](https://YOUR_GITHUB_USERNAME.github.io/Zeal-consulting/)
+[![Live Demo](https://img.shields.io/badge/Live-Website-0284c7?style=for-the-badge&logo=github)](https://ahmedahmedmohamedbadredin-boop.github.io/Zeal-consulting/)
 [![Tech Stack](https://img.shields.io/badge/Stack-HTML5%20%7C%20TailwindCSS%20%7C%20JavaScript%20%7C%20Python-0c4a6e?style=for-the-badge)]()
 [![Status](https://img.shields.io/badge/Status-Production%20Ready-emerald?style=for-the-badge)]()
 
@@ -10,7 +10,7 @@
 
 ## 🌐 Live Website
 
-- **Production URL:** [https://YOUR_GITHUB_USERNAME.github.io/Zeal-consulting/](https://YOUR_GITHUB_USERNAME.github.io/Zeal-consulting/)
+- **Production URL:** [https://ahmedahmedmohamedbadredin-boop.github.io/Zeal-consulting/](https://YOUR_GITHUB_USERNAME.github.io/Zeal-consulting/)
 *(Replace `YOUR_GITHUB_USERNAME` with your actual GitHub username)*
 
 ---
