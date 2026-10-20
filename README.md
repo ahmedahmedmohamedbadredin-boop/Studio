@@ -10,8 +10,7 @@
 
 ## 🌐 Live Website
 
-- **Production URL:** [https://ahmedahmedmohamedbadredin-boop.github.io/Zeal-consulting/](https://YOUR_GITHUB_USERNAME.github.io/Zeal-consulting/)
-*(Replace `YOUR_GITHUB_USERNAME` with your actual GitHub username)*
+- **Production URL:** [https://ahmedahmedmohamedbadredin-boop.github.io/Zeal-consulting/](https://ahmedahmedmohamedbadredin-boop.github.io/Zeal-consulting/)
 
 ---
 
